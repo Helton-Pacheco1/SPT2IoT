@@ -1,0 +1,144 @@
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+
+const char* ssid = "Wokwi-GUEST";
+const char* password = "";
+
+
+const char* mqtt_server = "9ca03c36523a4fbaa8ffdfb128beef7b.s1.eu.hivemq.cloud";
+const int mqtt_port = 8883;
+const char* mqtt_user = "CarePlus";
+const char* mqtt_password = "CarePlus321@";
+
+
+const char* topic_bpm = "careplus/bpm";
+const char* topic_temp = "careplus/temp";
+
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+
+#define BTN_BPM 32
+#define BTN_TEMP 33
+
+
+WiFiClientSecure espClient;
+PubSubClient client(espClient);
+
+
+int batimentos = 70;
+float temperatura = 36.5;
+
+
+void setup_wifi() {
+  delay(10);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+}
+
+
+void reconnect() {
+  while (!client.connected()) {
+    if (client.connect("ESP32_CarePlus", mqtt_user, mqtt_password)) {
+      // conectado
+    } else {
+      delay(2000);
+    }
+  }
+}
+
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(BTN_BPM, INPUT_PULLUP);
+  pinMode(BTN_TEMP, INPUT_PULLUP);
+
+  setup_wifi();
+
+  
+  espClient.setInsecure();
+
+  client.setServer(mqtt_server, mqtt_port);
+
+  
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("Erro no display");
+    for(;;);
+  }
+
+  display.clearDisplay();
+}
+
+
+void loop() {
+
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  
+  bool bpmPressed = digitalRead(BTN_BPM) == LOW;
+  bool tempPressed = digitalRead(BTN_TEMP) == LOW;
+
+  
+  batimentos = random(60, 100);
+  temperatura = random(360, 380) / 10.0;
+
+  
+  if (bpmPressed) {
+    String payload = "{\"batimentos\":";
+    payload += batimentos;
+    payload += "}";
+    client.publish(topic_bpm, payload.c_str());
+  }
+
+  if (tempPressed) {
+    String payload = "{\"temperatura\":";
+    payload += temperatura;
+    payload += "}";
+    client.publish(topic_temp, payload.c_str());
+  }
+
+  
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+
+  if (bpmPressed) {
+    display.setTextSize(1);
+    display.setCursor(0, 10);
+    display.print("Batimentos:");
+    display.setCursor(0, 30);
+    display.setTextSize(2);
+    display.print(batimentos);
+  }
+  else if (tempPressed) {
+    display.setTextSize(1);
+    display.setCursor(0, 10);
+    display.print("Temperatura:");
+    display.setCursor(0, 30);
+    display.setTextSize(2);
+    display.print(temperatura);
+    display.print(" C");
+  }
+  else {
+    display.setTextSize(2);
+    display.setCursor(10, 25);
+    display.print("CarePlus");
+  }
+
+  display.display();
+
+  delay(1000);
+}
