@@ -1,4 +1,4 @@
-# 🩺 IoT Vital Signs Monitoring System
+# 🩺 Sprint 2 CarePlus Edge Computing e Computer Systems
 Este projeto apresenta uma arquitetura completa de um sistema de monitoramento de sinais vitais baseado em Internet das Coisas (IoT). O sistema coleta dados fisiológicos em tempo real (BPM e Temperatura), processa-os na borda (Edge), envia de forma segura para a nuvem e os disponibiliza em um dashboard para profissionais de saúde.
 
 🏗️ Arquitetura do Sistema
