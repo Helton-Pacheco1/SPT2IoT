@@ -1,6 +1,13 @@
 # 🩺 Sprint 2 CarePlus Edge Computing e Computer Systems
 Este projeto apresenta uma arquitetura completa de um sistema de monitoramento de sinais vitais baseado em Internet das Coisas (IoT). O sistema coleta dados fisiológicos em tempo real (BPM e Temperatura), processa-os na borda (Edge), envia de forma segura para a nuvem e os disponibiliza em um dashboard para profissionais de saúde.
 
+👨‍💻 Autor
+Desenvolvido por:
+
+RM567113 - Helton Pacheco dos Santos 
+RM567754 - Geovanna Caroline Lima Santos
+RM566903 - Gustavo Firmino Barbosa
+
 🏗️ Arquitetura do Sistema
 O sistema é dividido em quatro camadas principais:
 
@@ -77,9 +84,4 @@ Acesse o dashboard em localhost:porta para ver os dados em tempo real.
 📄 Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
-👨‍💻 Autor
-Desenvolvido por:
 
-RM567113 - Helton Pacheco dos Santos 
-RM567754 - Geovanna Caroline Lima Santos
-RM566903 - Gustavo Firmino Barbosa
